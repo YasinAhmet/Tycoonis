@@ -13,6 +13,8 @@ public class DefEvent : MonoBehaviour
     public string textToBeThrown;
     public Sprite eventImage;
 
+    public int turnspastafterevent = 0;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -77,7 +77,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
+    m_LineSpacing: 0.7
   m_Text: Loot the bunker and use them for ourselves.
 --- !u!1 &1848741473224366283
 GameObject:
@@ -99,7 +99,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1848741473224366282
 RectTransform:
   m_ObjectHideFlags: 0
@@ -271,9 +271,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29a59558be47947a49e0d04d1ab0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEndOption: 0
+  deathEvent: {fileID: 0}
+  additionalText: 
   SoldierLoss: 0
-  Money: 100
-  Workforce: 0
+  chanceToBeKilled: 0.5
+  BFood: 0
+  BGood: 0
+  BArm: 0
+  BMat: 0
   EnemyWeaknessPUSH: 0
   SoldierGain: 0
   reqPanel: {fileID: 2851325138259673921}
@@ -625,9 +631,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29a59558be47947a49e0d04d1ab0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEndOption: 0
+  deathEvent: {fileID: 0}
+  additionalText: 
   SoldierLoss: 0
-  Money: 0
-  Workforce: 0
+  chanceToBeKilled: 0.5
+  BFood: 0
+  BGood: 0
+  BArm: 0
+  BMat: 0
   EnemyWeaknessPUSH: 3
   SoldierGain: 0
   reqPanel: {fileID: 2851325138259673921}
@@ -770,10 +782,13 @@ MonoBehaviour:
     with it? We have the options to use them to fight with the bandits, to use them
     to bribe the bandits and get some military power, or just use them ourselves.
   eventImage: {fileID: 21300000, guid: d073bd74f075c234c9026976d7cb5445, type: 3}
+  turnspastafterevent: 0
   opt2requirement: {fileID: 1848741474190010810}
   opt1requirement: {fileID: 1848741473224366285}
   opt3requirement: {fileID: 9033786251649941121}
   opt4requirement: {fileID: 0}
+  endOption: {fileID: 0}
+  defaultOption: {fileID: 0}
 --- !u!114 &4597855574355016346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -893,7 +908,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
+    m_LineSpacing: 0.7
   m_Text: Let the gun speak!
 --- !u!1 &2692070363381737907
 GameObject:
@@ -1127,7 +1142,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
+    m_LineSpacing: 0.7
   m_Text: A couple of bandit bastards wouldn't be bad to defend ourselves.
 --- !u!1 &9033786251649941127
 GameObject:
@@ -1254,7 +1269,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1848741474382870799}
         m_TargetAssemblyTypeName: UpperEvent1, Assembly-CSharp
-        m_MethodName: Option2
+        m_MethodName: Option3
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1321,9 +1336,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29a59558be47947a49e0d04d1ab0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEndOption: 0
+  deathEvent: {fileID: 0}
+  additionalText: 
   SoldierLoss: 0
-  Money: 0
-  Workforce: 0
+  chanceToBeKilled: 0.5
+  BFood: 0
+  BGood: 0
+  BArm: 0
+  BMat: 0
   EnemyWeaknessPUSH: 0
-  SoldierGain: 5
+  SoldierGain: 2
   reqPanel: {fileID: 2851325138259673921}

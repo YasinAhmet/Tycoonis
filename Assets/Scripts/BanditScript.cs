@@ -2,18 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BanditScript : MonoBehaviour
 {
     public static BanditScript banditScript;
+
+    public Slider slider;
     
     [Header("Bandit Authority")]
-    public int BanditAuthority = 10;
-    public int MaxBanditAuthority = 15;
-    public int BanditAuthorityIncrease = 1;
+    public int BanditAuthority = 50;
+    public int MaxBanditAuthority = 100;
+    public int BanditAuthorityIncrease = 2;
     
     [Header("Bandit Hunt Features")]
-    public int ForceToHunt = 5;
+    public int ForceToHunt = 1;
     public int MinAuthorityLossOnHunt = 2;
 
     // Start is called before the first frame update
@@ -24,12 +28,27 @@ public class BanditScript : MonoBehaviour
 
     public void TurnHappened()
     {
+        if (BanditAuthority <= 0)
+        {
+            SceneManager.LoadScene("endgame");
+        }
+        
+        if (BanditAuthority >= 100)
+        {
+            SceneManager.LoadScene("endgamelos");
+        }
+        
         if (BanditAuthority < MaxBanditAuthority)
         {
-            if (Random.Range(1, 2) == 1)
+            if (TimeManager.timeManager.day > 10)
             {
                 BanditAuthority += BanditAuthorityIncrease;
+                slider.value = BanditAuthority;
             }
+        }
+        else
+        {
+            slider.value = 100;
         }
     }
 
@@ -38,8 +57,7 @@ public class BanditScript : MonoBehaviour
         soldierScript sc = UserStash.userstash.soldierScript;
         
         if (SentForceAmount >= ForceToHunt) {
-            sc.AddSoldier(-Random.Range(1,SentForceAmount));
-            BanditAuthority -= (int)(SentForceAmount/0.5);
+            BanditAuthority -= SentForceAmount*5;
         }
     }
 }

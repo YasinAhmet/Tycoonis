@@ -1,16 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class eventRequirement : MonoBehaviour
 {
+    public bool isEndOption = false;
+    public GameObject deathEvent;
+
+    public void EndMethod()
+    {
+        if (isEndOption)
+        {
+            Debug.Log("END");
+            Application.Quit();
+        }
+    }
+
+    [TextArea(5, 5)] public string additionalText = "";
+    
     [Header("Losses")]
     public int SoldierLoss = 0;
-    
-    [Header("Neutral")]
-    public int Money = 0;
-    public int Workforce = 0;
+
+    public float chanceToBeKilled = 0.5f;
+
+    [Header("Resource Loss")] 
+    public float BFood = 0;
+    public float BGood = 0;
+    public float BArm = 0;
+    public float BMat = 0;
 
     [Header("Gainments")]
     public int EnemyWeaknessPUSH = 0;
@@ -18,9 +38,9 @@ public class eventRequirement : MonoBehaviour
 
     public GameObject reqPanel;
     
-    public bool CheckSoldierREQ(UserStash userStash)
+    public bool CheckSoldierREQ()
     {
-        if (userStash.soldierScript.soldierAmount >= SoldierLoss)
+        if (UserStash.userstash.soldierScript.soldiers.Count >= SoldierLoss)
         {
             return true;
         }
@@ -28,19 +48,70 @@ public class eventRequirement : MonoBehaviour
         return false;
     }
     
-    public bool CheckMoneyREQ(UserStash userStash)
+    public bool CheckFoodREQ()
     {
-        if (userStash.getMoney() >= Money)
+        if (BFood <= 0)
         {
+            return true;
+        }
+        if (UserStash.userstash.incomemanager.consumeThingAble(BFood, new List<Resource>(UserStash.userstash.bFoodslist)))
+        {
+            Debug.Log("Event_Check_Food Success");
             return true;
         }
 
         return false;
     }
     
-    public bool CheckWorkREQ(UserStash userStash)
+    public bool CheckMatREQ()
     {
-        if (userStash.getWorkForce() >= Workforce)
+        if (BMat <= 0)
+        {
+            return true;
+        }
+        if (UserStash.userstash.incomemanager.consumeThingAble(BMat, new List<Resource>(UserStash.userstash.bResourceslist)))
+        {
+            Debug.Log("Event_Check_MAT Success");
+            return true;
+        }
+
+        return false;
+    }
+    
+    public bool CheckArmREQ()
+    {
+        if (BArm <= 0)
+        {
+            return true;
+        }
+        if (UserStash.userstash.incomemanager.consumeThingAble(BArm, new List<Resource>(UserStash.userstash.bArmslist)))
+        {
+            Debug.Log("Event_Check_ARM Success");
+            return true;
+        }
+
+        return false;
+    }
+    
+    public bool CheckGoodREQ()
+    {
+        if (BGood <= 0)
+        {
+            return true;
+        }
+        Debug.Log("Event_Check_Good Going");
+        if (UserStash.userstash.incomemanager.consumeThingAble(BGood, new List<Resource>(UserStash.userstash.bGoodslist)))
+        {
+            Debug.Log("Event_Check_Good Success");
+            return true;
+        }
+
+        return false;
+    }
+    
+    public bool CheckAllSupplyREQ()
+    {
+        if (CheckArmREQ() && CheckFoodREQ() && CheckGoodREQ() && CheckMatREQ())
         {
             return true;
         }
@@ -48,9 +119,9 @@ public class eventRequirement : MonoBehaviour
         return false;
     }
 
-    public bool CheckAll(UserStash userStash)
+    public bool CheckAll()
     {
-        if (CheckMoneyREQ(userStash) && CheckWorkREQ(userStash) && CheckSoldierREQ(userStash))
+        if (CheckSoldierREQ() && CheckAllSupplyREQ())
         {
             return true;
         }
@@ -58,14 +129,47 @@ public class eventRequirement : MonoBehaviour
         return false;
     }
 
-    public void FinishREQ(UserStash userStash)
+    public void doCasualties(int soldierTotal)
     {
-        userStash.addMoney(Money, -Workforce);
+        for (int i = 0; i < Math.Abs(soldierTotal); i++)
+        {
+            if (Random.Range(0f, 1f) < chanceToBeKilled)
+            {
+                List<Soldier> soldatlist = UserStash.userstash.soldierScript.soldiers;
+                int soldiernumbertobekilled = Random.Range(0, soldatlist.Count-1);
+
+                deathEvent = UserStash.userstash.deathEvent;
+                GameObject de = Instantiate(deathEvent, EventThrover.eventThrover.eventFRAME.transform);
+                de.GetComponent<InfoEvent>().DeathHappened(soldatlist[soldiernumbertobekilled]);
+                
+                Destroy(soldatlist[soldiernumbertobekilled].gameObject);
+                soldatlist.Remove(soldatlist[soldiernumbertobekilled]);
+            }
+        }
+    }
+
+    public void FinishREQ()
+    {
+        int soldierTotal = SoldierGain - SoldierLoss;
+
+        Debug.Log(soldierTotal);
+        if (soldierTotal > 0)
+        {
+            Debug.Log("EVTRQ SOLDIER");
+            UserStash.userstash.soldierScript.AddSoldier(soldierTotal, new Equipment());
+            
+        } else if (soldierTotal < 0)
+        {
+            doCasualties(soldierTotal);
+        }
+
+        IncomeScript incs = UserStash.userstash.incomemanager;
+
+        incs.handleConsume(BGood, new List<Resource>(UserStash.userstash.bGoodslist));
+        incs.handleConsume(BArm, new List<Resource>(UserStash.userstash.bArmslist));
+        incs.handleConsume(BFood, new List<Resource>(UserStash.userstash.bFoodslist));
+        incs.handleConsume(BMat, new List<Resource>(UserStash.userstash.bResourceslist));
         
-        int soldierTotal = SoldierLoss + SoldierGain;
-
-        userStash.soldierScript.AddSoldier(soldierTotal);
-
         BanditScript.banditScript.BanditAuthority -= EnemyWeaknessPUSH;
     }
 
@@ -74,22 +178,38 @@ public class eventRequirement : MonoBehaviour
         string req = "";
         int soldierTotal = SoldierLoss + SoldierGain;
 
-        if (SoldierLoss != 0 || SoldierGain != 0) {
-            req += "Soldier Effect: " + soldierTotal + "\n";
+        if (additionalText != "")
+        {
+            req += "\n Additional Text: " + additionalText;
         }
 
-        if (Money != 0) {
-            req += "Money Effect: " + Money + "\n";
+        
+        if (soldierTotal != 0) {
+            req += "Maximum Soldier Effect: " + soldierTotal + "\n";
         }
 
-        if (Workforce != 0) {
-            req += "Work Effect: " + Workforce + "\n";
+        if (BFood != 0) {
+            req += "Basic Food Effect: " + BFood + "\n";
+        }
+
+        if (BGood != 0)
+        {
+            req += "Basic Good Effect: " + BGood + "\n";
+        }
+        
+        if (BMat != 0)
+        {
+            req += "Basic Resource Effect: " + BMat + "\n";
+        }
+        
+        if (BArm != 0)
+        {
+            req += "Basic Arms Effect: " + BArm + "\n";
         }
 
         if (EnemyWeaknessPUSH != 0) {
             req += "Hegemony Effect: " + EnemyWeaknessPUSH + "\n";
         }
-
         return req;
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,67 +9,64 @@ public class SlaveScript : MonoBehaviour
     public IncomeScript incomeScript;
     public UserStash userstash;
     public int MaxWorkerAmount = 0;
-    public int workerAmount = 0;
 
     public Text maxworkertext;
     public Text workertext;
     
     public int updateTime;
     private int updatetracker;
-
-    public int slaveTime;
-    private int slavetracker;
-
+    
     public Text moneycheckZone;
-    
 
+    public List<Slave> slaveList = new List<Slave>();
     public List<Slave> slavewaitList = new List<Slave>();
-    
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        updatetracker++;
-        slavetracker++;
+        CalculateWorkerStuff();
+    }
 
-        if (updatetracker >= updateTime)
+    public void SlaveC()
+    {
+        CalculateWorkerStuff();
+        
+        if (slavewaitList.Count == 0)
         {
-            CalculateWorkerStuff();
+            return;
         }
+        slavewaitList[0].setPeriod -= 1;
 
-        if (slavetracker >= slaveTime && slavewaitList.Count != 0)
+        if (slavewaitList[0].setPeriod <= 0)
         {
-            slavetracker = 0;
-            slavewaitList[0].setPeriod -= 1;
-
-            if (slavewaitList[0].setPeriod <= 0) {
-                Destroy(slavewaitList[0].gameObject);
-                slavewaitList.Remove(slavewaitList[0]);
-                workerAmount++;
-            }
+            slavewaitList[0].waitingfordeployment = false;
+            slaveList.Add(slavewaitList[0]);
+            Destroy(slavewaitList[0].gameObject);
+            slavewaitList.Remove(slavewaitList[0]);
         }
     }
 
     public void addSlaveToWList()
     {
-        int moneypaid = 0;
+        float goodpaid = 0;
+        bool success = false;
         if (moneycheckZone.text != "")
         {
-            moneypaid = int.Parse(moneycheckZone.text);
-            userstash.addMoney(-moneypaid, 0);
+            goodpaid = float.Parse(moneycheckZone.text);
+            success = userstash.incomemanager.consumeThingAble(goodpaid, new List<Resource>(userstash.bGoodslist));
         }
 
-        if (moneypaid < 10 || MaxWorkerAmount <= workerAmount+slavewaitList.Count)
+        
+        if (goodpaid < 1 || MaxWorkerAmount <= slaveList.Count+slavewaitList.Count || !success)
         {
             return;
         }
         
-        
+        userstash.incomemanager.consumeThing(goodpaid,new List<Resource>(userstash.bGoodslist));
         GameObject gm = new GameObject();
         gm.AddComponent<Slave>();
         Slave slave = gm.GetComponent<Slave>();
 
-        slave.setSlaveData(moneypaid);
+        slave.setSlaveData(goodpaid*10);
         slavewaitList.Add(slave);
     }
 
@@ -77,6 +75,6 @@ public class SlaveScript : MonoBehaviour
         MaxWorkerAmount = incomeScript.incomeCollectors.Count*5;
 
         maxworkertext.text = maxworkertext.GetComponent<TextData>().firstText + MaxWorkerAmount;
-        workertext.text = workertext.GetComponent<TextData>().firstText + workerAmount;
+        workertext.text = workertext.GetComponent<TextData>().firstText + slaveList.Count;
     }
 }

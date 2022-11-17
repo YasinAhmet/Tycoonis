@@ -77,7 +77,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
+    m_LineSpacing: 0.7
   m_Text: It's not a good idea to attack now.
 --- !u!1 &4707801865653805214
 GameObject:
@@ -271,9 +271,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29a59558be47947a49e0d04d1ab0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEndOption: 0
+  additionalText: 
   SoldierLoss: 0
-  Money: 0
-  Workforce: 0
+  chanceToBeKilled: 0.5
+  BFood: 0
+  BGood: 0
+  BArm: 0
+  BMat: 0
   EnemyWeaknessPUSH: 0
   SoldierGain: 0
   reqPanel: {fileID: 9181860331429900380}
@@ -415,10 +420,12 @@ MonoBehaviour:
   textToBeThrown: We recently decided to launch an assault against the bandit camps.
     How great should the assault's scale be?
   eventImage: {fileID: 21300000, guid: f06b12ac700cf874082697a2149d8534, type: 3}
+  turnspastafterevent: 0
   opt2requirement: {fileID: 4707801865653805188}
   opt1requirement: {fileID: 4707801866816573939}
   opt3requirement: {fileID: 6593787010998178892}
   opt4requirement: {fileID: 0}
+  endOption: {fileID: 0}
 --- !u!114 &6843884661708447056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -809,10 +816,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29a59558be47947a49e0d04d1ab0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SoldierLoss: 5
-  Money: 0
-  Workforce: 0
-  EnemyWeaknessPUSH: 2
+  isEndOption: 0
+  additionalText: 
+  SoldierLoss: 1
+  chanceToBeKilled: 0.5
+  BFood: 0
+  BGood: 0
+  BArm: 0
+  BMat: 0
+  EnemyWeaknessPUSH: 4
   SoldierGain: 0
   reqPanel: {fileID: 9181860331429900380}
 --- !u!1 &4707801867331668681
@@ -892,8 +904,8 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
-  m_Text: Lets launch an offensive of five people!
+    m_LineSpacing: 0.7
+  m_Text: Let's send a soldier to disrupt them.
 --- !u!1 &5718433364766246271
 GameObject:
   m_ObjectHideFlags: 0
@@ -1086,10 +1098,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29a59558be47947a49e0d04d1ab0e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SoldierLoss: 10
-  Money: 0
-  Workforce: 0
-  EnemyWeaknessPUSH: 4
+  isEndOption: 0
+  additionalText: 
+  SoldierLoss: 2
+  chanceToBeKilled: 0.5
+  BFood: 0
+  BGood: 0
+  BArm: 0
+  BMat: 0
+  EnemyWeaknessPUSH: 8
   SoldierGain: 0
   reqPanel: {fileID: 9181860331429900380}
 --- !u!1 &6466099978397496770
@@ -1169,8 +1186,8 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.8
-  m_Text: Five won't be enough, lets send ten people to be sure!
+    m_LineSpacing: 0.7
+  m_Text: One won't be enough, lets send two people to be sure!
 --- !u!1 &9052609027699415726
 GameObject:
   m_ObjectHideFlags: 0

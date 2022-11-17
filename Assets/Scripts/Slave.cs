@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Slave : MonoBehaviour
 {
-    public int moneyPaid = 0;
-    public int avgPeriod = 1000;
-
+    public bool waitingfordeployment = true;
+    public float moneyPaid = 0;
+    public int avgPeriod = 5;
     public int setPeriod;
-    public void setSlaveData(int money)
+
+    public int WorkEfficiency = 1;
+    public int foodsalary = 1;
+    public void setSlaveData(float money)
     {
         moneyPaid = money;
-        int rnd = Random.Range(300-moneyPaid, 900-moneyPaid);
-        setPeriod = rnd + avgPeriod;
+        float rnd = Random.Range(1-moneyPaid/50, 5-moneyPaid/50);
+        setPeriod = (int)(rnd + avgPeriod);
     }
 }
